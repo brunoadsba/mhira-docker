@@ -1,0 +1,35 @@
+ARG version=latest
+
+FROM mhiraproject/mhira-frontend:latest
+
+WORKDIR /usr/share/nginx/html
+
+ARG email
+
+# Substituir endpoint GraphQL
+RUN find ./ -type f -exec sed -i -e 's/https:\/\/dev-api.mhira.net\/graphql/.\/graphql/g' {} \;
+
+# Configurar email
+RUN find ./ -type f -exec sed -i -e "s/email:!0/email:$email/g" {} \;
+RUN find ./ -type f -exec sed -i -e "s/email:0/email:$email/g" {} \;
+RUN find ./ -type f -exec sed -i -e "s/email:true/email:$email/g" {} \;
+RUN find ./ -type f -exec sed -i -e "s/email:false/email:$email/g" {} \;
+
+# Copiar arquivos de tradução personalizados
+COPY translations/pt-br.js ./assets/i18n/
+COPY translations/translation-list.js ./assets/i18n/
+
+# Atualizar lista de traduções no JavaScript principal
+RUN find ./ -name "*.js" -exec sed -i -e 's/"English","Deutsch","Spanish","Albanian"/"English","Deutsch","Spanish","Albanian","Português (Brasil)"/g' {} \;
+RUN find ./ -name "*.js" -exec sed -i -e 's/"en","de","es","sq"/"en","de","es","sq","pt-br"/g' {} \;
+
+# Definir português como idioma padrão
+RUN find ./ -name "*.js" -exec sed -i -e 's/TranslationCode\.EN/TranslationCode.PT_BR/g' {} \;
+RUN find ./ -name "*.js" -exec sed -i -e 's/"en"/"pt-br"/g' {} \;
+
+# Copiar configuração customizada do nginx
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

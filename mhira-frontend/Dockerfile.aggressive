@@ -1,0 +1,25 @@
+ARG version=latest
+
+FROM mhiraproject/mhira-frontend:$version
+
+WORKDIR /usr/share/nginx/html
+
+ARG email
+
+# Substituição mais agressiva de URLs
+RUN find ./ -type f -name "*.js" -exec sed -i -e 's/https:\/\/dev-api\.mhira\.net\/graphql/\.\/graphql/g' {} \;
+RUN find ./ -type f -name "*.js" -exec sed -i -e 's/dev-api\.mhira\.net/\./g' {} \;
+RUN find ./ -type f -name "*.js" -exec sed -i -e 's/https:\/\/[^/]*mhira\.net/\./g' {} \;
+
+# Substituição de email
+RUN find ./ -type f -exec sed -i -e "s/email:!0/email:$email/g" {} \;
+RUN find ./ -type f -exec sed -i -e "s/email:0/email:$email/g" {} \;
+RUN find ./ -type f -exec sed -i -e "s/email:true/email:$email/g" {} \;
+RUN find ./ -type f -exec sed -i -e "s/email:false/email:$email/g" {} \;
+
+# Copiar configuração customizada do nginx
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80 80
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

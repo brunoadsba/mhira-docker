@@ -1,0 +1,29 @@
+<app-master-data-list
+  [data]="data"
+  [columns]="columns"
+  [loading]="loading"
+  [actions]="actions"
+  [pageInfo]="pageInfo"
+  (pageChange)="onPageChange($event)"
+  (rowClick)="onPatientSelect($event)"
+  (executeAction)="onAction($event)"
+  (sort)="onSort($event)"
+  (filter)="onFilter($event)"
+>
+  <div class="actions-left" actions-left>
+    <app-master-data-search (search)="searchPatients($event)"></app-master-data-search>
+   <label [ngClass]="{'text-green' : onlyMyPatients}" class="spacer" (ngModelChange)="onMyPatients()" nz-checkbox [(ngModel)]="onlyMyPatients">{{ 'patients.myPatients' | translate }}</label>
+   <label [ngClass]="{'text-green' : archivedPatients}" (ngModelChange)="onArchievedPatients()" nz-checkbox [(ngModel)]="archivedPatients">{{ 'patients.archivedPatients' | translate }}</label>
+  </div>
+  <ng-container actions-right>
+    <button
+      nz-button
+      nzType="primary"
+      nzShape="circle"
+      routerLink="/mhira/case-management/profile"
+      *ngIf="perms.permissionsOnly([PK.MANAGE_PATIENTS])"
+    >
+      <i nz-icon nzType="plus"></i>
+    </button>
+  </ng-container>
+</app-master-data-list>

@@ -1,0 +1,31 @@
+<p class="info-tip"><span nz-icon nzType="info-circle" nzTheme="outline"></span> {{'questionnairesForm.pleaseUse' | translate}} <a target="_blank" href="https://getodk.org/xlsform/"> {{'questionnairesForm.this' | translate}}</a> {{'questionnairesForm.thisWeb' | translate}}</p>
+<div class="parent-div">
+  <div class="form-div">
+    <app-form
+      class="mt-3"
+      [form]="form"
+      [formData]="formData"
+      [isLoading]="loading"
+      [populateForm]="populateForm"
+      [resetForm]="resetForm"
+      [inputMode]="inputMode"
+      [showCancelButton]="false"
+      [showEditButton]="perms.permissionsOnly(PK.MANAGE_QUESTIONNAIRES)"
+      (submitForm)="onSubmit($event)"
+      (inputModeChanged)="inputMode = $event"
+    ></app-form>
+  </div>
+  <div class="keyword-container">
+    <p class="keyword-title"><b>{{'questionnairesForm.keywords'| translate}}</b></p>
+    <nz-select nz-tooltip [nzTooltipTitle]="titleTemplate" nzTooltipPlacement="bottomLeft" [disabled]="!inputMode" nzMode="tags" [nzPlaceHolder]="'questionnairesForm.keywords' | translate" [(ngModel)]="listOfTagOptions">
+      <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+    </nz-select>
+    <div class="margin-top">
+      <p class="keyword-title"><b>{{'questionnairesForm.description' | translate}}</b></p>
+      <angular-editor [config]="editorConfig" [placeholder]="'questionnairesForm.enterHere' | translate" [(ngModel)]="customDescription"></angular-editor>
+    </div>
+  </div>
+  <ng-template #titleTemplate>
+    <span>{{ 'questionnairesForm.addKeyword' | translate }}</span>
+  </ng-template>
+</div>

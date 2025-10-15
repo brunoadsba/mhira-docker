@@ -1,0 +1,14 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Instalar dependências
+RUN npm init -y && \
+    npm install express express-graphql graphql
+
+# Copiar arquivo de teste
+COPY test-backend.js .
+
+EXPOSE 3000
+
+CMD ["node", "test-backend.js"]

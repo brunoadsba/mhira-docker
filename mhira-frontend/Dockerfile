@@ -1,4 +1,4 @@
-ARG version
+ARG version=latest
 
 FROM mhiraproject/mhira-frontend:$version
 
@@ -13,6 +13,9 @@ RUN find ./ -type f -exec sed -i -e "s/email:!0/email:$email/g" {} \;
 RUN find ./ -type f -exec sed -i -e "s/email:0/email:$email/g" {} \;
 RUN find ./ -type f -exec sed -i -e "s/email:true/email:$email/g" {} \;
 RUN find ./ -type f -exec sed -i -e "s/email:false/email:$email/g" {} \;
+
+# Copiar configuração customizada do nginx
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80 80
 

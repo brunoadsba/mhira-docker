@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  test-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.test-backend
+    ports:
+      - "3001:3000"
+    networks:
+      - mhira-network
+
+  mhira-frontend:
+    build:
+      context: ./mhira-frontend
+      dockerfile: Dockerfile
+      args:
+        version: latest
+        email: "false"
+    depends_on:
+      - test-backend
+    ports:
+      - "8080:80"
+    networks:
+      - mhira-network
+
+networks:
+  mhira-network:
+    driver: bridge
